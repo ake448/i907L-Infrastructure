@@ -1,0 +1,66 @@
+# Variables for infrastructure configuration
+# AWS provider version 2.43.0
+
+variable "aws_region" {
+  description = "AWS region for deployment"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "ubuntu_ami" {
+  description = "Ubuntu 20.04 LTS AMI ID for WireGuard VPN server"
+  type        = string
+  default     = "ami-0c55b159cbfafe1f0"  # Ubuntu 20.04 LTS in us-east-1
+}
+
+variable "win2022_core_ami" {
+  description = "Windows Server 2022 Core AMI ID (for DC01)"
+  type        = string
+  default     = "ami-06dd2d6cbf5b47e2b"  # Windows Server 2022 Core in us-east-1
+}
+
+variable "win2022_full_ami" {
+  description = "Windows Server 2022 with Desktop Experience (Full GUI)"
+  type        = string
+  default     = "ami-0a634eccd5a695f1f"  # Windows Server 2022 Full in us-east-1
+}
+
+variable "admin_public_ip" {
+  description = "Administrator public IP for WireGuard VPN access"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment name"
+  type        = string
+  default     = "production"
+}
+
+variable "instance_tags" {
+  description = "Common tags for all instances"
+  type        = map(string)
+  default = {
+    Environment = "production"
+    ManagedBy   = "terraform"
+  }
+}
+
+variable "wireguard_server_private_key" {
+  description = "WireGuard server private key (Curve25519)"
+  type        = string
+}
+
+variable "wireguard_server_public_key" {
+  description = "WireGuard server public key (Curve25519)"
+  type        = string
+}
+
+variable "wireguard_client_private_key" {
+  description = "WireGuard client private key (Curve25519)"
+  type        = string
+}
+
+variable "wireguard_client_public_key" {
+  description = "WireGuard client public key (Curve25519)"
+  type        = string
+}

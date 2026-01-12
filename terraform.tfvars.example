@@ -1,0 +1,35 @@
+# Terraform Variables File - Corporate Infrastructure Deployment
+# Copy this file to terraform.tfvars and update with your values
+
+# AWS Region for deployment
+aws_region = "us-east-1"
+
+# Your public IP address for WireGuard VPN access
+# Get your IP with: curl -4 ifconfig.co
+admin_public_ip = "203.0.113.42"
+
+# (Optional) Override default AMI IDs for your region
+# Uncomment and update if needed
+
+# Ubuntu 20.04 LTS AMI (for WireGuard VPN server)
+# Find latest with: aws ec2 describe-images --owners 099720109477 --filters "Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*" --region us-east-1
+# ubuntu_ami = "ami-0c55b159cbfafe1f0"
+
+# Windows Server 2022 Core AMI (for DC01 - Domain Controller)
+# Find latest with: aws ec2 describe-images --owners amazon --filters "Name=name,Values=Windows_Server-2022-English-Core*" --region us-east-1
+# win2022_core_ami = "ami-06dd2d6cbf5b47e2b"
+
+# Windows Server 2022 with Desktop Experience (Full GUI)
+# For DC01, SQL01, DEV01, CAN01, WEB01
+# Find latest with: aws ec2 describe-images --owners amazon --filters "Name=name,Values=Windows_Server-2022-English-Full*" --region us-east-1
+# win2022_full_ami = "ami-0a634eccd5a695f1f"
+
+# Environment name for tagging
+environment = "production"
+
+# Common tags applied to all instances
+instance_tags = {
+  Environment = "production"
+  ManagedBy   = "terraform"
+  Project     = "corporate-infrastructure"
+}
