@@ -34,9 +34,11 @@ PrivateKey = ${SERVER_PRIVATE_KEY}
 Address = 10.10.0.1/24
 ListenPort = 51820
 
-# Enable NAT for clients to reach internet and internal network
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -s 10.10.0.0/24 -d 10.0.0.0/16 -j MASQUERADE; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -s 10.10.0.0/24 -d 10.0.0.0/16 -j MASQUERADE; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+# Enable NAT for clients to reach internet (but NOT internal VPC traffic)
+# Internal traffic preserves source IP (10.10.0.2) so security groups work correctly
+# AWS EC2 uses ens5 as the primary network interface
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens5 -s 10.10.0.0/24 ! -d 10.0.0.0/16 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens5 -s 10.10.0.0/24 ! -d 10.0.0.0/16 -j MASQUERADE
 
 # Peer: Admin client
 [Peer]
