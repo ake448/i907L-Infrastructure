@@ -127,6 +127,55 @@ def remove_existing_keys(content):
 
     return '\n'.join(filtered_lines)
 
+def update_wireguard_client_config(client_private_b64, server_public_b64):
+    """Update wireguard-client.conf with new keys"""
+    # Try to get server IP from terraform output if available
+    server_ip = "YOUR_SERVER_IP_HERE"  # Default placeholder
+
+    # Try to read from terraform.tfvars or output if available
+    try:
+        # This is a simple heuristic - look for any IP that might be the server
+        # In a real scenario, you'd parse terraform output
+        pass
+    except:
+        pass
+
+    client_config = f"""[Interface]
+PrivateKey = {client_private_b64}
+Address = 10.10.0.2/24
+DNS = 10.0.2.10, 8.8.8.8
+
+[Peer]
+PublicKey = {server_public_b64}
+Endpoint = {server_ip}:51820
+AllowedIPs = 10.10.0.0/24, 10.0.0.0/16
+PersistentKeepalive = 25
+"""
+
+    with open("wireguard-client.conf", 'w') as f:
+        f.write(client_config)
+
+    print("Updated wireguard-client.conf")
+    print("⚠️  IMPORTANT: Replace YOUR_SERVER_IP_HERE with your actual WireGuard server IP")
+
+def update_wireguard_init_script(server_private_b64, client_public_b64):
+    """Update wireguard-init.sh template variables with actual keys"""
+    # Read current init script
+    with open("wireguard-init.sh", 'r') as f:
+        content = f.read()
+
+    # Replace template variables with actual keys for direct execution
+    # This creates a version with keys embedded for testing
+    content_with_keys = content.replace("${SERVER_PRIVATE_KEY}", server_private_b64)
+    content_with_keys = content_with_keys.replace("${CLIENT_PUBLIC_KEY}", client_public_b64)
+
+    # Write a backup with embedded keys (for testing)
+    with open("wireguard-init-with-keys.sh", 'w') as f:
+        f.write(content_with_keys)
+
+    print("Created wireguard-init-with-keys.sh (for testing)")
+    print("Note: The main wireguard-init.sh remains as a Terraform template")
+
 def main():
     print("Generating WireGuard Curve25519 keys...")
 
@@ -172,7 +221,19 @@ wireguard_client_public_key = "{client_public_b64}"
         f.write(final_content)
 
     print("\nKeys successfully written to terraform.tfvars")
-    print("You can now run: terraform apply")
+
+    # Update configuration files
+    update_wireguard_client_config(client_private_b64, server_public_b64)
+    update_wireguard_init_script(server_private_b64, client_public_b64)
+
+    print("\n✅ All configuration files updated!")
+    print("\n📋 Next steps:")
+    print("1. 📝 Update wireguard-client.conf: Replace YOUR_SERVER_IP_HERE with your WireGuard server IP")
+    print("2. 🚀 Run: terraform apply")
+    print("3. 🔗 Import wireguard-client.conf into your WireGuard client")
+    print("4. 🖥️  RDP to Windows servers: 10.0.2.10 (DC01), 10.0.2.11 (SQL01), etc.")
+    print("\n🔐 Use 'infrastructure_ssh_key' for SSH access to the VPN server")
+    print("🗝️  Use generated passwords for Windows RDP access")
 
 if __name__ == "__main__":
     main()
