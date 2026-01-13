@@ -49,21 +49,28 @@ resource "aws_security_group" "vpn" {
   description = "Allow WireGuard VPN access from admin IP"
   vpc_id      = aws_vpc.main.id
  
-  # Allow WireGuard UDP 51820 from admin IP only
-  ingress {
-    from_port   = 51820
-    to_port     = 51820
-    protocol    = "udp"
-    cidr_blocks = ["${var.admin_public_ip}/32"]
+  # Allow WireGuard UDP 51820 from admin IPs
+  dynamic "ingress" {
+    for_each = var.admin_public_ips
+    content {
+      from_port   = 51820
+      to_port     = 51820
+      protocol    = "udp"
+      cidr_blocks = [ingress.value]
+      description = "Allow WireGuard from admin IP"
+    }
   }
 
-  # Allow SSH from admin IP
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["23.127.9.242/32"]
-    description = "Allow SSH from admin IP"
+  # Allow SSH from admin IPs
+  dynamic "ingress" {
+    for_each = var.admin_public_ips
+    content {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = [ingress.value]
+      description = "Allow SSH from admin IP"
+    }
   }
  
   # Allow all outbound traffic

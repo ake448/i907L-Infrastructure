@@ -4,9 +4,9 @@
 # AWS Region for deployment
 aws_region = "us-east-1"
 
-# Your public IP address for WireGuard VPN access
+# Your public IPs for WireGuard VPN access
 # Get your IP with: curl -4 ifconfig.co
-admin_public_ip = "23.127.9.242"
+admin_public_ips = ["23.127.9.242/32", "207.140.152.226/32"]
 
 # (Optional) Override default AMI IDs for your region
 # Uncomment and update if needed

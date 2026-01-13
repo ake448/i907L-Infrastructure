@@ -25,9 +25,10 @@ variable "win2022_full_ami" {
   default     = "ami-0a634eccd5a695f1f"  # Windows Server 2022 Full in us-east-1
 }
 
-variable "admin_public_ip" {
-  description = "Administrator public IP for WireGuard VPN access"
-  type        = string
+variable "admin_public_ips" {
+  description = "Administrator public IPs for WireGuard VPN access"
+  type        = list(string)
+  default     = []
 }
 
 variable "environment" {
