@@ -28,19 +28,19 @@ chmod 700 /etc/wireguard/keys
 
 # Generate WireGuard interface configuration
 # Server runs on 10.10.0.1/24 with UDP 51820
-cat > /etc/wireguard/wg0.conf << 'EOF'
+cat > /etc/wireguard/wg0.conf << EOF
 [Interface]
-PrivateKey = {{SERVER_PRIVATE_KEY}}
+PrivateKey = ${SERVER_PRIVATE_KEY}
 Address = 10.10.0.1/24
 ListenPort = 51820
 
-# Enable NAT for clients to reach internal network
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+# Enable NAT for clients to reach internet and internal network
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -s 10.10.0.0/24 -d 10.0.0.0/16 -j MASQUERADE; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -s 10.10.0.0/24 -d 10.0.0.0/16 -j MASQUERADE; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 
 # Peer: Admin client
 [Peer]
-PublicKey = {{CLIENT_PUBLIC_KEY}}
+PublicKey = ${CLIENT_PUBLIC_KEY}
 AllowedIPs = 10.10.0.2/32
 EOF
 

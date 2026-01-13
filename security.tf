@@ -11,7 +11,25 @@ resource "aws_security_group" "internal" {
     protocol        = "-1"
     self 			= true
   }
- 
+
+  # Allow all traffic from VPN security group (for WireGuard server communication)
+  ingress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    security_groups = [aws_security_group.vpn.id]
+    description     = "Allow traffic from WireGuard VPN server"
+  }
+
+  # Allow RDP from VPN subnet
+  ingress {
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["10.10.0.0/24"]
+    description = "Allow RDP from VPN clients"
+  }
+
   # Allow all outbound traffic
   egress {
     from_port   = 0
