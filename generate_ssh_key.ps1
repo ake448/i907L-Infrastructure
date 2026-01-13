@@ -1,7 +1,7 @@
 # Generate SSH key for WireGuard server access
 # Run this script to create the key pair
 
-Write-Host "Generating SSH key pair for WireGuard server access..."
+Write-Host "Generating Ed25519 SSH key pair for WireGuard server access..."
 
 # Check if ssh-keygen is available
 try {
@@ -11,7 +11,6 @@ try {
     exit 1
 }
 
-# Generate the key pair
 ssh-keygen -t rsa -b 4096 -f infrastructure_ssh_key -N ""
 
 Write-Host "SSH key pair generated successfully!" -ForegroundColor Green

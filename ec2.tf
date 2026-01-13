@@ -75,6 +75,8 @@ resource "aws_instance" "dc01" {
     delete_on_termination = true
   }
 
+  user_data = file("${path.module}/windows-init.ps1")
+
   tags = merge(
     var.instance_tags,
     {
@@ -104,6 +106,8 @@ resource "aws_instance" "sql01" {
     volume_size           = 100
     delete_on_termination = true
   }
+
+  user_data = file("${path.module}/windows-init.ps1")
 
   tags = merge(
     var.instance_tags,
@@ -135,6 +139,8 @@ resource "aws_instance" "dev01" {
     delete_on_termination = true
   }
 
+  user_data = file("${path.module}/windows-init.ps1")
+
   tags = merge(
     var.instance_tags,
     {
@@ -165,6 +171,8 @@ resource "aws_instance" "can01" {
     delete_on_termination = true
   }
 
+  user_data = file("${path.module}/windows-init.ps1")
+
   tags = merge(
     var.instance_tags,
     {
@@ -194,6 +202,8 @@ resource "aws_instance" "web01" {
     volume_size           = 50
     delete_on_termination = true
   }
+
+  user_data = file("${path.module}/windows-init.ps1")
 
   tags = merge(
     var.instance_tags,

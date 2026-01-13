@@ -7,8 +7,11 @@
 # Network interface for WireGuard VPN server (10.10.0.1/24)
 # Placed in public subnet for internet accessibility
 resource "aws_network_interface" "wireguard" {
-  subnet_id           = aws_subnet.public.id
-  security_groups     = [aws_security_group.vpn.id]
+  subnet_id       = aws_subnet.public.id
+  security_groups = [
+    aws_security_group.vpn.id,
+    aws_security_group.internal.id
+  ]
 
   tags = {
     Name = "wireguard-eni"
