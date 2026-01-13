@@ -21,7 +21,7 @@ resource "aws_network_interface" "wireguard" {
 # Elastic IP for stable VPN endpoint
 resource "aws_eip" "wireguard" {
   instance = aws_instance.wireguard.id
-  vpc      = true
+  domain   = "vpc"
 
   tags = {
     Name = "wireguard-eip"
