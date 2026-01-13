@@ -64,8 +64,7 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# Private route table - no direct internet access
-# Routes VPN client traffic (10.10.0.0/24) through WireGuard server
+# Private route table - Routes VPN traffic and provides internet access
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
@@ -73,6 +72,12 @@ resource "aws_route_table" "private" {
   route {
     cidr_block           = "10.10.0.0/24"
     network_interface_id = aws_network_interface.wireguard.id
+  }
+
+  # Allow outbound internet access via Internet Gateway
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
   }
 
   tags = {
