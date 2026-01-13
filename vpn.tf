@@ -34,8 +34,9 @@ resource "aws_eip" "wireguard" {
 # PUBLIC SUBNET - t3.small - On-Demand
 # Runs on port UDP 51820
 resource "aws_instance" "wireguard" {
-  ami           = var.ubuntu_ami
-  instance_type = "t3.small"
+  ami                   = var.ubuntu_ami
+  instance_type         = "t3.small"
+  source_dest_check     = false  # Required for NAT/routing VPN traffic
 
   network_interface {
     network_interface_id = aws_network_interface.wireguard.id
