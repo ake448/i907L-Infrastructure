@@ -7,8 +7,9 @@
 # Network interface for WireGuard VPN server (10.10.0.1/24)
 # Placed in public subnet for internet accessibility
 resource "aws_network_interface" "wireguard" {
-  subnet_id       = aws_subnet.public.id
-  security_groups = [
+  subnet_id         = aws_subnet.public.id
+  source_dest_check = false  # Required for NAT/routing VPN traffic
+  security_groups   = [
     aws_security_group.vpn.id,
     aws_security_group.internal.id
   ]
@@ -34,9 +35,8 @@ resource "aws_eip" "wireguard" {
 # PUBLIC SUBNET - t3.small - On-Demand
 # Runs on port UDP 51820
 resource "aws_instance" "wireguard" {
-  ami               = var.ubuntu_ami
-  instance_type     = "t3.small"
-  source_dest_check = false  # Required for NAT/routing VPN traffic
+  ami           = var.ubuntu_ami
+  instance_type = "t3.small"
 
   network_interface {
     network_interface_id = aws_network_interface.wireguard.id
